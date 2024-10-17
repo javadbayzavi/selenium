@@ -12,8 +12,9 @@ from utils import string_utils
 class LoginPageTest(AppTest):
     def initialize_driver(self):
         self.driverSettings = ChromeDriverSettings()
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
-                                       options=self.driverSettings.get_options())
+        # self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
+        #                                options=self.driverSettings.get_options())
+        self.driver = webdriver.Chrome(options=self.driverSettings.get_options())
         self.driver.implicitly_wait(40)
 
     def test_see_login_panel(self):
