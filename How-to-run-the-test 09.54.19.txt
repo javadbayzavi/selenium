@@ -1,0 +1,21 @@
+Create and activate a virtual environment, if you don't have one already:
+
+python3 -m venv .venv
+source .venv/bin/activate
+
+Install all the dependencies:
+
+pip install -r requirements.txt
+
+then use the following command in the shell to run the test:
+
+python -m unittest [path to the test file]
+
+or, to run all the tests:
+
+python -m unittest
+
+Example:
+python -m unittest
+python -m unittest authorization-app/test_landing_page.py
+
