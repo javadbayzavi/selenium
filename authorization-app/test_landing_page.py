@@ -15,9 +15,10 @@ class LandingPageTest(AppTest):
 
     def initialize_driver(self):
         self.driverSettings = ChromeDriverSettings()
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
-                                       options=self.driverSettings.get_options())
-
+        # self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
+        #                                options=self.driverSettings.get_options())
+        
+        self.driver = webdriver.Chrome(options=self.driverSettings.get_options())
     def test_auth_landing_page(self):
         self.driver.get(environment.target_url())
         self.assertEqual("Studio 3T License Manager", self.driver.title)
