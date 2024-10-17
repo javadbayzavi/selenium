@@ -14,7 +14,10 @@ class LoginPageTest(AppTest):
         self.driverSettings = ChromeDriverSettings()
         # self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
         #                                options=self.driverSettings.get_options())
-        self.driver = webdriver.Chrome(options=self.driverSettings.get_options())
+
+        chrome_driver_path = "/usr/bin/chromedriver"
+
+        self.driver = webdriver.Chrome(executable_path=chrome_driver_path, options=self.driverSettings.get_options())
         self.driver.implicitly_wait(40)
 
     def test_see_login_panel(self):
