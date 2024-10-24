@@ -19,14 +19,18 @@ class AppTest(ABC, unittest.TestCase):
     def initialize_driver(self):
         pass
 
+    @abstractmethod
+    def cool_down(self):
+        pass
+
     def setUp(self):
         self.initialize_driver()
-        if not self.driverSettings.is_headless():
-            self.driver.minimize_window()
 
     def tearDown(self):
-        if self.driver:
-            self.driver.quit()
+        self.cool_down()
+
+    def set_driver(self, driver):
+        self.driver = driver
 
     def accept_cookies(self):
         wait = WebDriverWait(self.driver, 5)

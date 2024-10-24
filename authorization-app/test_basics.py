@@ -1,44 +1,22 @@
-import unittest
-from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from concurrent.futures import ThreadPoolExecutor
+from core.ParallelTestCase import ParallelTestCase
+from core.TestCase import TestCase
+from core.WebDrivers import WebDrivers
+from core.WebDrivers import BrowserType
+from core import environment
 
-class ParallelSeleniumTests(unittest.TestCase):
-    
-    def setUp(self):
-        # Specify the desired capabilities for different browsers
-        #TODO: This must be taken from url
-        self.hub_url = 'http://selenium-hub:4444/wd/hub'
-        browser = self.browser
+@WebDrivers.enforce_firefox_driver(False)
+class MyTestCase(TestCase):
+# class MyTestCase(ParallelTestCase):
+    def test_example_1(self):
+        self.driver.get(environment.target_url())
+        self.assertEqual("Studio 3T License Manager", self.driver.title)        
+        self.assertTrue(True)
 
-        if browser == "chrome":
-            self.capabilities = DesiredCapabilities.CHROME.copy()
-        elif browser == "firefox":
-            self.capabilities = DesiredCapabilities.FIREFOX.copy()
+    def test_example_2(self):
+        self.assertTrue(True)
 
-        self.driver = webdriver.Remote(
-            command_executor=self.hub_url,
-            desired_capabilities=self.capabilities
-        )
-        self.driver.implicitly_wait(10)
-    
-    def test_open_page(self):
-        self.driver.get("http://example.com")
-        self.assertIn("Example Domain", self.driver.title)
+    def test_example_3(self):
+        self.assertTrue(True)
 
-    def tearDown(self):
-        self.driver.quit()
-
-def run_test_in_parallel(browser):
-    suite = unittest.TestSuite()
-    suite.addTest(ParallelSeleniumTests("test_open_page"))
-    ParallelSeleniumTests.browser = browser  # Set browser dynamically
-    runner = unittest.TextTestRunner()
-    runner.run(suite)
-
-if __name__ == "__main__":
-    browsers = ["chrome", "firefox"]  # You can add more browsers here
-
-    # Run tests in parallel using ThreadPoolExecutor
-    with ThreadPoolExecutor(max_workers=len(browsers)) as executor:
-        futures = [executor.submit(run_test_in_parallel, browser) for browser in browsers]
+    def test_example_4(self):
+        self.assertTrue(True)

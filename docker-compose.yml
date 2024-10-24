@@ -1,35 +1,77 @@
 services:
+  jaeger:
+    image: jaegertracing/all-in-one:1.60
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+    networks:
+      - selenium-network
   chrome:
-    image: selenium/node-chrome:latest
+    image: selenium/node-chromium:latest
+    shm_size: 2gb    
+    container_name: ${CHROME_CONTAINER_NAME}
     depends_on:
-      - selenium-hub
+      - ${HUB_CONTAINER_NAME}
     networks:
       - selenium-network
     environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_HOST=${HUB_CONTAINER_NAME}
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-      - SE_NODE_MAX_INSTANCES=3
+      - SE_NODE_MAX_INSTANCES=5
+      - SE_NODE_MAX_SESSION=5
+      - SE_ENABLE_TRACING=true
+      - SE_OTEL_TRACES_EXPORTER=otlp
+      - SE_OTEL_EXPORTER_ENDPOINT=http://jaeger:4317      
+    healthcheck:
+      test: curl -s http://${HUB_CONTAINER_NAME}:4444/status | grep '"ready":true' || exit 1
+      interval: 10s
+      retries: 5
+      timeout: 10s
+
   firefox:
     image: selenium/node-firefox:latest
+    shm_size: 2gb    
+    container_name: ${FIREFOX_CONTAINER_NAME}
     depends_on:
-      - selenium-hub
+      - ${HUB_CONTAINER_NAME}
     networks:
       - selenium-network
     environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_HOST=${HUB_CONTAINER_NAME}
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_INSTANCES=5
+      - SE_NODE_MAX_SESSION=5
+      - SE_ENABLE_TRACING=true
+      - SE_OTEL_TRACES_EXPORTER=otlp
+      - SE_OTEL_EXPORTER_ENDPOINT=http://jaeger:4317      
+    healthcheck:
+      test: curl -s http://${HUB_CONTAINER_NAME}:4444/status | grep '"ready":true' || exit 1
+      interval: 10s
+      retries: 5
+      timeout: 10s
 
   selenium-hub:
     image: selenium/hub:latest
-    container_name: selenium-hub
+    shm_size: 2gb    
+    container_name: ${HUB_CONTAINER_NAME}
     networks:
       - selenium-network
+    depends_on:
+      - jaeger
     ports:
       - "4442:4442"
       - "4443:4443"
       - "4444:4444"
-
+    healthcheck:
+      test: curl -s http://localhost:4444/status | grep '"ready":true' || exit 1
+      interval: 10s
+      retries: 5
+      timeout: 10s
+    environment:
+      - SE_ENABLE_TRACING=true
+      - SE_OTEL_TRACES_EXPORTER=otlp
+      - SE_OTEL_EXPORTER_ENDPOINT=http://jaeger:4317
 networks:
   selenium-network:

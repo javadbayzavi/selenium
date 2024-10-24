@@ -1,26 +1,11 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
-
+from core.ParallelTestCase import ParallelTestCase
+from core.TestCase import TestCase
 from core import environment
-from core.AppTest import AppTest
-from core.ChromeDriverSettings import ChromeDriverSettings
-from core.WebDrivers import WebDrivers
 
 
-@WebDrivers.enforce_chrome_driver
-class LandingPageTest(AppTest):
-
-    def initialize_driver(self):
-        self.driverSettings = ChromeDriverSettings()
-        # self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
-        #                                options=self.driverSettings.get_options())
-
-        chrome_driver_path = "/usr/bin/chromedriver"
-        service = Service(chrome_driver_path)
-        self.driver = webdriver.Chrome(service=service, options=self.driverSettings.get_options())
+class LandingPageTest(ParallelTestCase):
     def test_auth_landing_page(self):
         self.driver.get(environment.target_url())
         self.assertEqual("Studio 3T License Manager", self.driver.title)
