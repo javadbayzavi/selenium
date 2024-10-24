@@ -1,11 +1,4 @@
 services:
-  jaeger:
-    image: jaegertracing/all-in-one:1.60
-    ports:
-      - "16686:16686"
-      - "4317:4317"
-    networks:
-      - selenium-network
   chrome:
     image: selenium/node-chromium:latest
     shm_size: 2gb    
@@ -20,9 +13,7 @@ services:
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
       - SE_NODE_MAX_INSTANCES=5
       - SE_NODE_MAX_SESSION=5
-      - SE_ENABLE_TRACING=true
-      - SE_OTEL_TRACES_EXPORTER=otlp
-      - SE_OTEL_EXPORTER_ENDPOINT=http://jaeger:4317      
+      - SE_ENABLE_TRACING=false
     healthcheck:
       test: curl -s http://${HUB_CONTAINER_NAME}:4444/status | grep '"ready":true' || exit 1
       interval: 10s
@@ -43,9 +34,7 @@ services:
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
       - SE_NODE_MAX_INSTANCES=5
       - SE_NODE_MAX_SESSION=5
-      - SE_ENABLE_TRACING=true
-      - SE_OTEL_TRACES_EXPORTER=otlp
-      - SE_OTEL_EXPORTER_ENDPOINT=http://jaeger:4317      
+      - SE_ENABLE_TRACING=false
     healthcheck:
       test: curl -s http://${HUB_CONTAINER_NAME}:4444/status | grep '"ready":true' || exit 1
       interval: 10s
@@ -58,8 +47,6 @@ services:
     container_name: ${HUB_CONTAINER_NAME}
     networks:
       - selenium-network
-    depends_on:
-      - jaeger
     ports:
       - "4442:4442"
       - "4443:4443"
@@ -70,8 +57,6 @@ services:
       retries: 5
       timeout: 10s
     environment:
-      - SE_ENABLE_TRACING=true
-      - SE_OTEL_TRACES_EXPORTER=otlp
-      - SE_OTEL_EXPORTER_ENDPOINT=http://jaeger:4317
+      - SE_ENABLE_TRACING=false
 networks:
   selenium-network:

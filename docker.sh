@@ -25,11 +25,3 @@ else
     echo "Docker daemon is running."
 fi
 
-# Optional: Add the current user to the Docker group if not already a member
-if [[ $(groups "$USER" | grep -o 'docker') != "docker" ]]; then
-    echo "Adding $USER to the Docker group..."
-    usermod -aG docker "$USER" || echo "Failed to add $USER to the Docker group."
-    echo "Added $USER to the Docker group. Log out and back in to use Docker without sudo."
-else
-    echo "$USER is already in the Docker group."
-fi
