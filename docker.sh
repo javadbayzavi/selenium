@@ -18,14 +18,31 @@ install_docker() {
     sudo systemctl enable docker
 }
 
+# Function to check if the Docker daemon is running
+is_docker_running() {
+    systemctl is-active --quiet docker
+}
+
+# Check if Docker is installed
 if is_docker_installed; then
     echo "Docker is already installed."
 else
     echo "Docker is not installed. Installing now..."
     install_docker
     echo "Docker installation completed."
+fi
 
-    # Optional: Add the current user to the Docker group
-    sudo usermod -aG docker $USER
+# Check if Docker daemon is running
+if ! is_docker_running; then
+    echo "Docker daemon is not running. Starting Docker..."
+    sudo systemctl start docker
+fi
+
+# Optional: Add the current user to the Docker group
+if ! groups "$USER" | grep -q '\bdocker\b'; then
+    echo "Adding $USER to the Docker group..."
+    sudo usermod -aG docker "$USER"
     echo "Added $USER to the Docker group. Log out and back in to use Docker without sudo."
+else
+    echo "$USER is already in the Docker group."
 fi
