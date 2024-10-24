@@ -1,10 +1,9 @@
 from core.ParallelTestCase import ParallelTestCase
 from core.TestCase import TestCase
 from core.WebDrivers import WebDrivers
-from core.WebDrivers import BrowserType
 from core import environment
 
-@WebDrivers.enforce_firefox_driver(False)
+@WebDrivers.enforce_webdriver(environment.get_default_driver())
 class MyTestCase(TestCase):
 # class MyTestCase(ParallelTestCase):
     def test_example_1(self):

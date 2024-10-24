@@ -1,33 +1,27 @@
 from enum import Enum
 from functools import wraps
 
-class BrowserType(Enum):
-    CHROME = 1
-    FIREFOX = 2
-    EDGE = 3
-    SAFARI = 4
-
 class WebDrivers:
     @staticmethod
     def enforce_chrome_driver(cls_or_isLocal=None):
         # If called without parentheses, cls_or_isLocal is the class itself
         if isinstance(cls_or_isLocal, type):
-            return WebDrivers.enforce_webdriver(browser_type=BrowserType.CHROME)(cls_or_isLocal)
+            return WebDrivers.enforce_webdriver(browser_type="chrome")(cls_or_isLocal)
         else:
             isLocal = cls_or_isLocal if cls_or_isLocal is not None else False
-            return WebDrivers.enforce_webdriver(browser_type=BrowserType.CHROME, isLocal=isLocal)
+            return WebDrivers.enforce_webdriver(browser_type="chrome", isLocal=isLocal)
 
     @staticmethod
     def enforce_firefox_driver(cls_or_isLocal=None):
         # If called without parentheses, cls_or_isLocal is the class itself
         if isinstance(cls_or_isLocal, type):
-            return WebDrivers.enforce_webdriver(browser_type=BrowserType.FIREFOX)(cls_or_isLocal)
+            return WebDrivers.enforce_webdriver(browser_type="firefox")(cls_or_isLocal)
         else:
             isLocal = cls_or_isLocal if cls_or_isLocal is not None else False
-            return WebDrivers.enforce_webdriver(browser_type=BrowserType.FIREFOX, isLocal=isLocal)
+            return WebDrivers.enforce_webdriver(browser_type="firefox", isLocal=isLocal)
 
     @staticmethod
-    def enforce_webdriver(browser_type: BrowserType, isLocal: bool = False):
+    def enforce_webdriver(browser_type, isLocal: bool = False):
         def decorator(cls):
             cls._webdriver_type = browser_type
             cls._is_local = isLocal

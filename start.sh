@@ -1,5 +1,5 @@
 #!/bin/bash
-# Check if the environment argument is provided
+# Check if the environment and browser arguments are provided
 if [ -z "$1" ]; then
   echo "Usage: $0 <environment>"
   echo "Example: $0 test"
@@ -23,7 +23,7 @@ docker compose -f docker-compose.yml up -d
 
 #This variable is widely used througth the tests to point to the selenium hub.
 export HUB_URL="http://$HUB_CONTAINER_DOMAIN:4444"
-
+ 
 # Function to wait for a container to be healthy with a timeout
 wait_for_health() {
   local container_name=$1
@@ -78,7 +78,16 @@ wait_for_health ${FIREFOX_CONTAINER_NAME} $timeout
 
 echo "Selenium Grid is ready. Running tests..."
 
-# Run the Python tests
+echo "Set default driver to : chrome"
+export DEFAULT_DRIVER="chrome"
+
+# Run the Python tests for chrome
+python -m unittest
+
+echo "Set default driver to : firefox"
+export DEFAULT_DRIVER="firefox"
+
+# Run the Python tests for firefox
 python -m unittest
 
 # Stop and remove the containers after the tests finish
