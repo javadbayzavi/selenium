@@ -1,11 +1,11 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from core.ParallelTestCase import ParallelTestCase
 from core.TestCase import TestCase
 from core import environment
+from core.WebDrivers import WebDrivers
 
-
-class LandingPageTest(ParallelTestCase):
+@WebDrivers.enforce_webdriver(environment.get_default_driver())
+class LandingPageTest(TestCase):
     def test_auth_landing_page(self):
         self.driver.get(environment.target_url())
         self.assertEqual("Studio 3T License Manager", self.driver.title)
